@@ -4,7 +4,7 @@ const expressJwt = require("express-jwt"); // for authorization check
 const { errorHandler } = require("../helpers/dbErrorHandler");
 
 exports.signup = (req, res) => {
-   
+
     const user = new User(req.body);
     user.save((err, user) => {
         if (err) {
@@ -22,7 +22,7 @@ exports.signup = (req, res) => {
 
 
 exports.signin = (req, res) => {
-  
+
     const { email, password } = req.body;
     User.findOne({ email }, (err, user) => {
         if (err || !user) {
@@ -30,13 +30,13 @@ exports.signin = (req, res) => {
                 error: "User with that email does not exist. Please signup"
             });
         }
-       
+
         if (!user.authenticate(password)) {
             return res.status(401).json({
                 error: "Email and password dont match"
             });
         }
-       
+
         const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
         res.cookie("t", token, { expire: new Date() + 9999 });
         const { _id, name, email, role } = user;
